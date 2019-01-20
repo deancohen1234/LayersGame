@@ -37,7 +37,7 @@ void ALCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("Right", this, &ALCharacter::MoveRight);
 
 	PlayerInputComponent->BindAction("GoUp", IE_Pressed, this, &ALCharacter::GoUpLayer);
-	PlayerInputComponent->BindAction("GoDown", IE_Pressed, this, &ALCharacter::GoUpLayer);
+	PlayerInputComponent->BindAction("GoDown", IE_Pressed, this, &ALCharacter::GoDownLayer);
 
 }
 

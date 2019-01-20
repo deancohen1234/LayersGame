@@ -38,7 +38,7 @@ void ALPlayerController::BeginPlay()
 		}
 	}
 
-	CurrentLayer = MiddlePlatform; //defaulting top platform on start
+	CurrentLayer = TopPlatform; //defaulting top platform on start
 }
 
 void ALPlayerController::SetBottomPlatform(AActor * BPlatform)
@@ -59,18 +59,37 @@ void ALPlayerController::SetTopPlatform(AActor * TPlatform)
 //TODO condense move up and move down functions into one with a bool determining up or down
 void ALPlayerController::MoveUpLayer()
 {
-	CurrentLayer = FindNextLayer(true);
-
-	if (CurrentLayer == nullptr) 
+	if (CurrentLayer == nullptr)
 	{
 		return;
 	}
 
-	GetPawn()->SetActorLocation(CurrentLayer->GetActorLocation() + FVector(1.5f, 1.5f, 1.0f));
+	//local space location of pawn
+	FVector PreviousLocalLocation = CurrentLayer->GetTransform().InverseTransformPosition(GetPawn()->GetActorLocation());
+
+	CurrentLayer = FindNextLayer(true);
+
+	if (CurrentLayer == nullptr)
+	{
+		return;
+	}
+
+	FVector NewGlobalLocation = CurrentLayer->GetTransform().TransformPosition(PreviousLocalLocation);
+
+	GetPawn()->SetActorLocation(NewGlobalLocation);
+
 }
 
 void ALPlayerController::MoveDownLayer()
 {
+	if (CurrentLayer == nullptr)
+	{
+		return;
+	}
+
+	//local space location of pawn
+	FVector PreviousLocalLocation = CurrentLayer->GetTransform().InverseTransformPosition(GetPawn()->GetActorLocation());
+
 	CurrentLayer = FindNextLayer(false);
 
 	if (CurrentLayer == nullptr)
@@ -78,7 +97,9 @@ void ALPlayerController::MoveDownLayer()
 		return;
 	}
 
-	GetPawn()->SetActorLocation(CurrentLayer->GetActorLocation() + FVector(1.5f, 1.5f, 1.0f));
+	FVector NewGlobalLocation = CurrentLayer->GetTransform().TransformPosition(PreviousLocalLocation);
+
+	GetPawn()->SetActorLocation(NewGlobalLocation);
 }
 
 //
