@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "LCharacter.h"
+#include "Kismet/GameplayStatics.h"
+#include "LPlayerController.h"
 
 
 // Sets default values
@@ -34,6 +36,9 @@ void ALCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("Forward", this, &ALCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("Right", this, &ALCharacter::MoveRight);
 
+	PlayerInputComponent->BindAction("GoUp", IE_Pressed, this, &ALCharacter::GoUpLayer);
+	PlayerInputComponent->BindAction("GoDown", IE_Pressed, this, &ALCharacter::GoUpLayer);
+
 }
 
 void ALCharacter::MoveForward(float Value) 
@@ -44,6 +49,20 @@ void ALCharacter::MoveForward(float Value)
 void ALCharacter::MoveRight(float Value) 
 {
 	AddMovementInput(GetActorRightVector() * Value, MoveSpeed);
+}
+
+void ALCharacter::GoUpLayer()
+{
+	ALPlayerController* playerController = Cast<ALPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	playerController->MoveUpLayer();
+}
+
+void ALCharacter::GoDownLayer()
+{
+	ALPlayerController* playerController = Cast<ALPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	playerController->MoveDownLayer();
 }
 
 
