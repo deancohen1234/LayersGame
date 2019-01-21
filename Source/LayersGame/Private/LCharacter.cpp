@@ -55,14 +55,14 @@ void ALCharacter::GoUpLayer()
 {
 	ALPlayerController* playerController = Cast<ALPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
-	playerController->MoveUpLayer();
+	playerController->MoveLayer(true);
 }
 
 void ALCharacter::GoDownLayer()
 {
 	ALPlayerController* playerController = Cast<ALPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
-	playerController->MoveDownLayer();
+	playerController->MoveLayer(false);
 }
 
 
