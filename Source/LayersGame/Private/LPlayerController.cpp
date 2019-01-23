@@ -37,10 +37,14 @@ void ALPlayerController::MoveLayer(bool bMoveUp)
 		return;
 	}
 
+	CurrentLayer->SetLayerActive(false); //set old layer active to false
 	//local space location of pawn
-	FVector PreviousLocalLocation = CurrentLayer->GetTransform().InverseTransformPosition(GetPawn()->GetActorLocation());
+	FVector PreviousLocalLocation = GetLocalLayerPosition();
 
 	CurrentLayer = bMoveUp ? CurrentLayer->GetAboveLayer() : CurrentLayer->GetBelowLayer();
+	CurrentLayer->SetLayerActive(true); //set new layer to active
+
+	//set current layer as active
 
 	if (CurrentLayer == nullptr)
 	{
@@ -52,4 +56,10 @@ void ALPlayerController::MoveLayer(bool bMoveUp)
 
 	GetPawn()->SetActorLocation(NewGlobalLocation);
 
+}
+
+FVector ALPlayerController::GetLocalLayerPosition()
+{
+	FVector LocalLocation = CurrentLayer->GetTransform().InverseTransformPosition(GetPawn()->GetActorLocation());
+	return LocalLocation;
 }

@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "LayerPlatform.h"
+#include "LPlayerController.h" //try and refactor this away if possibel
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -18,12 +19,29 @@ void ALayerPlatform::BeginPlay()
 	Super::BeginPlay();
 
 	SetupReferencePlatforms(); //find layer's above and below platforms and set them	
+	UpdateLayerIndicator(); //update indictors for activeness
+	
 }
 
 // Called every frame
 void ALayerPlatform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!bIsActiveLayer) 
+	{
+		if (InstantiatedIndicatorActor) 
+		{
+			ALPlayerController* PC = Cast<ALPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+			if (!PC) return;
+
+			FVector LocalPlayerLocation = PC->GetLocalLayerPosition();
+
+			FVector GlobaPlayerLocation = GetTransform().TransformPosition(LocalPlayerLocation);
+			InstantiatedIndicatorActor->SetActorLocation(GlobaPlayerLocation);
+		}
+	}
 }
 
 void ALayerPlatform::SetupReferencePlatforms()
@@ -65,6 +83,26 @@ ELayerType ALayerPlatform::GetBelowLayerEnum(ELayerType Layer)
 	return (ELayerType)val;
 }
 
+void ALayerPlatform::UpdateLayerIndicator()
+{
+	//if indicator is not spawned and layer is active
+		//spawn indicator
+	if (InstantiatedIndicatorActor != nullptr) //destroy all existent indicators
+	{
+		InstantiatedIndicatorActor->Destroy();
+	}
+
+	if (!bIsActiveLayer) //for all layers where they are not active, respawn indicators
+	{
+		FActorSpawnParameters Parameters;
+		Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		InstantiatedIndicatorActor = GetWorld()->SpawnActor<AActor>(IndicatorActor, GetActorLocation(), FRotator::ZeroRotator, Parameters);
+	}
+
+
+	//if indicator is spawned and layer is now inactive destroy actor
+}
+
 ELayerType ALayerPlatform::GetAboveLayerEnum(ELayerType Layer)
 {
 	int val = (int)Layer;
@@ -86,6 +124,13 @@ ELayerType ALayerPlatform::GetLayerType() const
 bool ALayerPlatform::IsLayerActive() const
 {
 	return bIsActiveLayer;
+}
+
+void ALayerPlatform::SetLayerActive(bool bState) 
+{
+	bIsActiveLayer = bState;
+
+	UpdateLayerIndicator();
 }
 
 ALayerPlatform * ALayerPlatform::GetAboveLayer() const

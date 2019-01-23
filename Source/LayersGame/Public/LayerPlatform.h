@@ -32,13 +32,20 @@ private:
 	ELayerType GetAboveLayerEnum(ELayerType Layer); //gets next enum in sequence, even with looping
 	ELayerType GetBelowLayerEnum(ELayerType Layer); //gets previous enum in sequence, even with looping
 
+	//updates from updating active status and decideds whether or not to show player projected location
+	void UpdateLayerIndicator();
+
 protected:
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> IndicatorActor = nullptr;
 
 	UPROPERTY(EditAnywhere)
 	ELayerType LayerType; //layer type is set in scene for each platform
 
 	UPROPERTY(EditAnywhere)
 	bool bIsActiveLayer; //is this layer the one the player is on
+
+	AActor* InstantiatedIndicatorActor = nullptr; //actor that is created from the IndicatorActor blueprint
 
 	virtual void BeginPlay() override;
 
@@ -47,6 +54,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	ELayerType GetLayerType() const;
+
+	void SetLayerActive(bool bState);
 	bool IsLayerActive() const;
 
 	ALayerPlatform* GetAboveLayer() const;
