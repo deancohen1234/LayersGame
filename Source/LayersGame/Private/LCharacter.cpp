@@ -2,6 +2,7 @@
 
 #include "LCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
 #include "LPlayerController.h"
 
 
@@ -11,6 +12,7 @@ ALCharacter::ALCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	MoveSpeed = 3.0f;
+	DamageRadius = 75.0f;
 
 }
 
@@ -41,6 +43,17 @@ void ALCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 }
 
+void ALCharacter::MakeDamageExplosion()
+{
+	TSubclassOf<UDamageType> type;
+	TArray<AActor*> IgnoredActors;
+	IgnoredActors.Add(this);
+
+	UGameplayStatics::ApplyRadialDamage(GetWorld(), 100.0f, GetActorLocation(), DamageRadius, type, IgnoredActors);
+	DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 16, FColor::Cyan, false, 1.0f, 0, 1.0f);
+	
+}
+
 void ALCharacter::MoveForward(float Value) 
 {
 	AddMovementInput(GetActorForwardVector() * Value, MoveSpeed);
@@ -63,6 +76,15 @@ void ALCharacter::GoDownLayer()
 	ALPlayerController* playerController = Cast<ALPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 	playerController->MoveLayer(false);
+}
+
+float ALCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) 
+{
+	UE_LOG(LogTemp, Warning, TEXT("Taking Damaged"));
+
+	this->Destroy(); //if you take damage you die
+
+	return DamageAmount;
 }
 
 

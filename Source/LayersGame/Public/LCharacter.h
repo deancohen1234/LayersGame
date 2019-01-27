@@ -20,14 +20,21 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+
+	UPROPERTY(EditDefaultsOnly)
+	float MoveSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	float DamageRadius;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(EditDefaultsOnly)
-	float MoveSpeed;
+	void MakeDamageExplosion();
+
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 private:
 

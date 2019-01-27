@@ -3,6 +3,7 @@
 #include "LPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "LayerPlatform.h"
+#include "LCharacter.h"
 
 void ALPlayerController::BeginPlay()
 {
@@ -55,7 +56,12 @@ void ALPlayerController::MoveLayer(bool bMoveUp)
 	FVector NewGlobalLocation = CurrentLayer->GetTransform().TransformPosition(PreviousLocalLocation);
 
 	GetPawn()->SetActorLocation(NewGlobalLocation);
+	ALCharacter* Character = Cast<ALCharacter>(GetPawn());
 
+	if (Character) 
+	{
+		Character->MakeDamageExplosion();
+	}
 }
 
 FVector ALPlayerController::GetLocalLayerPosition()
