@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "LAIController.generated.h"
 
+
 /**
  * 
  */
@@ -20,8 +21,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	float AcceptanceRadius;
 
-	AActor* GoalActor = nullptr;
-	
+	AActor* GoalActor = nullptr;	
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
