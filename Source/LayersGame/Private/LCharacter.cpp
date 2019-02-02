@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 #include "LPlayerController.h"
+#include "LHealthComponent.h"
 
 
 // Sets default values
@@ -13,6 +14,8 @@ ALCharacter::ALCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	MoveSpeed = 3.0f;
 	DamageRadius = 75.0f;
+
+	HealthComp = CreateDefaultSubobject<ULHealthComponent>("Health Component");
 
 }
 
@@ -82,8 +85,7 @@ float ALCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Dam
 {
 	UE_LOG(LogTemp, Warning, TEXT("Taking Damaged"));
 
-	//TODO make this an event system that both controllers can listen to
-	this->Destroy(); //if you take damage you die
+	HealthComp->HandleDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	return DamageAmount;
 }

@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "LCharacter.generated.h"
 
+class ULHealthComponent;
+
 UCLASS()
 class LAYERSGAME_API ALCharacter : public ACharacter
 {
@@ -18,6 +20,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditDefaultsOnly)
+	ULHealthComponent* HealthComp = nullptr;
 
 public:	
 
