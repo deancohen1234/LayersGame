@@ -33,10 +33,8 @@ void ALPlayerController::BeginPlay()
 //TODO condense move up and move down functions into one with a bool determining up or down
 void ALPlayerController::MoveLayer(bool bMoveUp)
 {
-	if (CurrentLayer == nullptr)
-	{
-		return;
-	}
+	if (CurrentLayer == nullptr) return;
+	if (GetPawn() == nullptr) return;
 
 	CurrentLayer->SetLayerActive(false); //set old layer active to false
 	//local space location of pawn
@@ -66,6 +64,14 @@ void ALPlayerController::MoveLayer(bool bMoveUp)
 
 FVector ALPlayerController::GetLocalLayerPosition()
 {
+	if (!GetPawn()) return FVector::ZeroVector;
+	
 	FVector LocalLocation = CurrentLayer->GetTransform().InverseTransformPosition(GetPawn()->GetActorLocation());
 	return LocalLocation;
+}
+
+void ALPlayerController::KillPlayer()
+{
+	UnPossess();
+	GetPawn()->Destroy();
 }

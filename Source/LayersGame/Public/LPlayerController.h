@@ -25,4 +25,6 @@ class LAYERSGAME_API ALPlayerController : public APlayerController
 		void MoveLayer(bool bMoveUp); //called from character and teleport player to new platform
 
 		FVector GetLocalLayerPosition();
+
+		void KillPlayer();
 };

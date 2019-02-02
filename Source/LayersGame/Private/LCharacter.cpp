@@ -49,8 +49,8 @@ void ALCharacter::MakeDamageExplosion()
 	TArray<AActor*> IgnoredActors;
 	IgnoredActors.Add(this);
 
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), 100.0f, GetActorLocation(), DamageRadius, type, IgnoredActors);
 	DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 16, FColor::Cyan, false, 1.0f, 0, 1.0f);
+	UGameplayStatics::ApplyRadialDamage(GetWorld(), 100.0f, GetActorLocation(), DamageRadius, type, IgnoredActors);
 	
 }
 
@@ -82,6 +82,7 @@ float ALCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Dam
 {
 	UE_LOG(LogTemp, Warning, TEXT("Taking Damaged"));
 
+	//TODO make this an event system that both controllers can listen to
 	this->Destroy(); //if you take damage you die
 
 	return DamageAmount;
