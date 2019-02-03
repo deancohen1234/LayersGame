@@ -17,6 +17,8 @@ class LAYERSGAME_API ALGameState : public AGameStateBase
 	
 private:
 
+	float Score;
+
 	float Difficulty;
 
 	TArray<ALEnemySpawnPoint*> SpawnPoints;
@@ -34,6 +36,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Game Settings")
 	float StartingDifficulty = 3.0f; // time in seconds between each spawned enemy
+
+	UFUNCTION()
+	void OnEnemyKilled();
 	
 public:
 	
