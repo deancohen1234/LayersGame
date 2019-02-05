@@ -43,4 +43,7 @@ protected:
 public:
 	
 	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintCallable)
+	float GetScore() const;
 };

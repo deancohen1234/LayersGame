@@ -29,7 +29,6 @@ void ALGameState::BeginPlay()
 
 }
 
-
 void ALGameState::SpawnEnemy()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Spawning Enemy"));
@@ -50,6 +49,11 @@ void ALGameState::SpawnEnemy()
 	}
 
 	EnemyHealthComponent->OnDeath.AddDynamic(this, &ALGameState::OnEnemyKilled);
+}
+
+float ALGameState::GetScore() const
+{
+	return Score;
 }
 
 FVector ALGameState::GetSpawnPoint()
