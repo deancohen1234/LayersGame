@@ -15,6 +15,8 @@ ALCharacter::ALCharacter()
 	MoveSpeed = 3.0f;
 	DamageRadius = 75.0f;
 
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh Component"));
+	MeshComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	HealthComp = CreateDefaultSubobject<ULHealthComponent>("Health Component");
 
 }
@@ -86,8 +88,23 @@ float ALCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Dam
 	UE_LOG(LogTemp, Warning, TEXT("Taking Damaged"));
 
 	HealthComp->HandleDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	UpdateMaterialEffects();
 
 	return DamageAmount;
+}
+
+void ALCharacter::UpdateMaterialEffects()
+{
+	if (MatInst == nullptr)
+	{
+		MatInst = MeshComponent->CreateAndSetMaterialInstanceDynamicFromMaterial(0, MeshComponent->GetMaterial(0));
+	}
+
+	if (MatInst)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Updating Mat"));
+		MatInst->SetScalarParameterValue("LastTimeDamageTaken", GetWorld()->TimeSeconds);
+	}
 }
 
 

@@ -7,6 +7,7 @@
 #include "LCharacter.generated.h"
 
 class ULHealthComponent;
+class UStaticMeshComponent;
 
 UCLASS()
 class LAYERSGAME_API ALCharacter : public ACharacter
@@ -18,11 +19,18 @@ public:
 	ALCharacter();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UStaticMeshComponent* MeshComponent;
 
 	UPROPERTY(EditDefaultsOnly)
 	ULHealthComponent* HealthComp = nullptr;
+
+	//dynamic material to pulse
+	UMaterialInstanceDynamic* MatInst;
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 public:	
 
@@ -48,4 +56,6 @@ private:
 	
 	void GoUpLayer();
 	void GoDownLayer();
+
+	void UpdateMaterialEffects();
 };
