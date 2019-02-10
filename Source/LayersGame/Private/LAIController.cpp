@@ -32,6 +32,7 @@ void ALAIController::Tick(float DeltaTime)
 		if (Character) 
 		{
 			Character->MakeDamageExplosion();
+			Character->Kill();
 		}
 	}
 }

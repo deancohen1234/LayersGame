@@ -48,17 +48,6 @@ void ALCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 }
 
-void ALCharacter::MakeDamageExplosion()
-{
-	TSubclassOf<UDamageType> type;
-	TArray<AActor*> IgnoredActors;
-	IgnoredActors.Add(this);
-
-	DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 16, FColor::Cyan, false, 1.0f, 0, 1.0f);
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), 100.0f, GetActorLocation(), DamageRadius, type, IgnoredActors);
-	
-}
-
 void ALCharacter::MoveForward(float Value) 
 {
 	AddMovementInput(GetActorForwardVector() * Value, MoveSpeed);
@@ -83,6 +72,18 @@ void ALCharacter::GoDownLayer()
 	playerController->MoveLayer(false);
 }
 
+void ALCharacter::MakeDamageExplosion()
+{
+	TSubclassOf<UDamageType> type;
+	TArray<AActor*> IgnoredActors;
+	IgnoredActors.Add(this);
+
+	DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 16, FColor::Cyan, false, 1.0f, 0, 1.0f);
+	UGameplayStatics::ApplyRadialDamage(GetWorld(), 100.0f, GetActorLocation(), DamageRadius, type, IgnoredActors);
+
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation());
+}
+
 float ALCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) 
 {
 	UE_LOG(LogTemp, Warning, TEXT("Taking Damaged"));
@@ -91,6 +92,11 @@ float ALCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Dam
 	UpdateMaterialEffects();
 
 	return DamageAmount;
+}
+
+void ALCharacter::Kill()
+{
+	HealthComp->OnDeath.Broadcast(); //goes into health component and broadcasts death
 }
 
 void ALCharacter::UpdateMaterialEffects()

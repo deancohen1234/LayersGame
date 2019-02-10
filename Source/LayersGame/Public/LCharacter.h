@@ -39,6 +39,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	float DamageRadius;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	float DamageAmount;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	UParticleSystem* ExplosionEffect;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -46,6 +52,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void MakeDamageExplosion();
+	void Kill(); //kills character
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
