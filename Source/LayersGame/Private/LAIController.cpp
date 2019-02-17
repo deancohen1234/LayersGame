@@ -22,18 +22,21 @@ void ALAIController::Tick(float DeltaTime)
 		return;
 	}
 
+	if (bIsAttacking) 
+	{
+		if (GetWorld()->TimeSeconds - AttackStartTime >= AttackDelay) 
+		{
+			Attack();
+		}
+	}
+
 	MoveToActor(GoalActor, AcceptanceRadius);
 
 	//try and damage player
-	if (IsActorInRange(GoalActor, AttackDistance))
+	if (IsActorInRange(GoalActor, AttackDistance) && !bIsAttacking)
 	{
-		ALCharacter* Character = Cast<ALCharacter>(GetPawn());
-
-		if (Character) 
-		{
-			Character->MakeDamageExplosion();
-			Character->Kill();
-		}
+		bIsAttacking = true; //AI is now set to explode/attack in attack delay time
+		AttackStartTime = GetWorld()->TimeSeconds;
 	}
 }
 
@@ -50,6 +53,22 @@ bool ALAIController::IsActorInRange(AActor * TargetActor, float Range)
 	else 
 	{
 		return false;
+	}
+}
+
+void ALAIController::Attack()
+{
+	ALCharacter* Character = Cast<ALCharacter>(GetPawn());
+
+	if (Character)
+	{
+		Character->MakeDamageExplosion();
+		Character->Kill();
+	}
+
+	else 
+	{
+		UE_LOG(LogTemp, Error, TEXT("AI Controller Character is not Found"));
 	}
 }
 

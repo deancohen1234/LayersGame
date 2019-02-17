@@ -22,14 +22,20 @@ protected:
 	float AcceptanceRadius;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attacking")
-	float AttackCooldown = 1.0f;
+	float AttackDelay = 0.5f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attacking")
 	float AttackDistance = 10.0f; //distance at which enemies will try and attack
 
-	AActor* GoalActor = nullptr;	
+	AActor* GoalActor = nullptr;
+
+	float AttackStartTime = 0.0f; //time when AI wanted to start attack
+	bool bIsAttacking = false;
 
 	bool IsActorInRange(AActor* TargetActor, float Range); //checks if target actor is within range of pawn
+	void Attack();
+
+
 public:
 
 	virtual void BeginPlay() override;
