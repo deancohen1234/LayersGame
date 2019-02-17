@@ -44,3 +44,8 @@ float ULHealthComponent::HandleDamage(float DamageAmount, struct FDamageEvent co
 	return DamageAmount;
 }
 
+float ULHealthComponent::GetCurrentHealth() const
+{
+	return CurrentHealth;
+}
+

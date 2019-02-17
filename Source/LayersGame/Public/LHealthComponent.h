@@ -35,4 +35,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FDeathEvent OnDeath;
+
+	UFUNCTION(BlueprintPure, Category = "HealthData")
+	float GetCurrentHealth() const;
 };
