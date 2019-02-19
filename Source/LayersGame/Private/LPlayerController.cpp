@@ -60,6 +60,8 @@ void ALPlayerController::MoveLayer(bool bMoveUp)
 	{
 		Character->MakeDamageExplosion();
 	}
+
+	ClientPlayCameraShake(LayerMoveShake);
 }
 
 FVector ALPlayerController::GetLocalLayerPosition()

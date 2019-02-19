@@ -18,6 +18,11 @@ class LAYERSGAME_API ALPlayerController : public APlayerController
 	private:
 		ALayerPlatform* CurrentLayer = nullptr; //layer player is currently on
 
+	protected:
+
+		UPROPERTY(EditDefaultsOnly, Category = "Effects")
+		TSubclassOf<UCameraShake> LayerMoveShake;
+
 	public:
 
 		virtual void BeginPlay() override;
