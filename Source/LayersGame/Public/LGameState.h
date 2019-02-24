@@ -37,6 +37,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Game Settings")
 	float StartingDifficulty = 3.0f; // time in seconds between each spawned enemy
 
+	UPROPERTY(EditDefaultsOnly, Category = "Game Settings")
+	float DifficultyScalar = 0.1f; //amount of seconds taken away from cooldown each enemy death
+
 	UFUNCTION()
 	void OnEnemyKilled();
 	

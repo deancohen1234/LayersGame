@@ -67,4 +67,9 @@ void ALGameState::OnEnemyKilled()
 {
 	Score += 100.0f;
 	UE_LOG(LogTemp, Warning, TEXT("Score: %f"), Score);
+
+	Difficulty = FMath::Clamp(Difficulty - DifficultyScalar, 0.1f, StartingDifficulty);
+
+	//GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
+	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &ALGameState::SpawnEnemy, Difficulty, true, 0.0f); //difficulty is timer interval
 }
