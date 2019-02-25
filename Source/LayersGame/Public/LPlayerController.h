@@ -18,10 +18,15 @@ class LAYERSGAME_API ALPlayerController : public APlayerController
 	private:
 		ALayerPlatform* CurrentLayer = nullptr; //layer player is currently on
 
+		float LastMoveLayerTime = 0.0f;
+
 	protected:
 
 		UPROPERTY(EditDefaultsOnly, Category = "Effects")
 		TSubclassOf<UCameraShake> LayerMoveShake;
+
+		UPROPERTY(EditDefaultsOnly, Category = "Player Attributes")
+		float MoveLayerCooldown = 0.5f;
 
 	public:
 

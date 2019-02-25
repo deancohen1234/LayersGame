@@ -36,6 +36,8 @@ void ALPlayerController::MoveLayer(bool bMoveUp)
 	if (CurrentLayer == nullptr) return;
 	if (GetPawn() == nullptr) return;
 
+	if (GetWorld()->GetTimeSeconds() - LastMoveLayerTime < MoveLayerCooldown) return; //move layer still on cooldown
+
 	CurrentLayer->SetLayerActive(false); //set old layer active to false
 	//local space location of pawn
 	FVector PreviousLocalLocation = GetLocalLayerPosition();
@@ -62,6 +64,7 @@ void ALPlayerController::MoveLayer(bool bMoveUp)
 	}
 
 	ClientPlayCameraShake(LayerMoveShake);
+	LastMoveLayerTime = GetWorld()->GetTimeSeconds();
 }
 
 FVector ALPlayerController::GetLocalLayerPosition()
