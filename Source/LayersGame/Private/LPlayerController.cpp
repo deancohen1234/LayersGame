@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "LayerPlatform.h"
 #include "LCharacter.h"
+#include "Sound/SoundCue.h"
 
 void ALPlayerController::BeginPlay()
 {
@@ -65,6 +66,8 @@ void ALPlayerController::MoveLayer(bool bMoveUp)
 
 	ClientPlayCameraShake(LayerMoveShake);
 	LastMoveLayerTime = GetWorld()->GetTimeSeconds();
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), LayerTransferSound, GetPawn()->GetActorLocation());
 }
 
 FVector ALPlayerController::GetLocalLayerPosition()

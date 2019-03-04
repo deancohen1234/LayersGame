@@ -7,6 +7,7 @@
 #include "LPlayerController.generated.h"
 
 class ALayerPlatform;
+class USoundCue;
 /**
  * 
  */
@@ -24,6 +25,9 @@ class LAYERSGAME_API ALPlayerController : public APlayerController
 
 		UPROPERTY(EditDefaultsOnly, Category = "Effects")
 		TSubclassOf<UCameraShake> LayerMoveShake;
+
+		UPROPERTY(EditDefaultsOnly, Category = "Sounds")
+		USoundCue* LayerTransferSound;
 
 		UPROPERTY(EditDefaultsOnly, Category = "Player Attributes")
 		float MoveLayerCooldown = 0.5f;
