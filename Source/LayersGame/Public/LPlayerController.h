@@ -26,6 +26,9 @@ class LAYERSGAME_API ALPlayerController : public APlayerController
 		UPROPERTY(EditDefaultsOnly, Category = "Effects")
 		TSubclassOf<UCameraShake> LayerMoveShake;
 
+		UPROPERTY(EditDefaultsOnly, Category = "Effects")
+		UForceFeedbackEffect* FeedbackEffect;
+
 		UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 		USoundCue* LayerTransferSound;
 

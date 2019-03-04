@@ -65,6 +65,7 @@ void ALPlayerController::MoveLayer(bool bMoveUp)
 	}
 
 	ClientPlayCameraShake(LayerMoveShake);
+	ClientPlayForceFeedback(FeedbackEffect, false, FName());
 	LastMoveLayerTime = GetWorld()->GetTimeSeconds();
 
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), LayerTransferSound, GetPawn()->GetActorLocation());
