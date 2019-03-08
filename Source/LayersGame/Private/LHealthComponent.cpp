@@ -3,6 +3,15 @@
 #include "LHealthComponent.h"
 
 
+/*
+Idea
+Make 3 UDamageType classes
+Layer Transfer Damage
+Player Hurt Damage
+Self Damage
+Powerup Damage
+*/
+
 // Sets default values for this component's properties
 ULHealthComponent::ULHealthComponent()
 {
