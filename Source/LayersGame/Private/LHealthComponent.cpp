@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "LHealthComponent.h"
-
+#include "LGameState.h"
+#include "Kismet/GameplayStatics.h"
 
 /*
 Idea
@@ -47,6 +48,21 @@ float ULHealthComponent::HandleDamage(float DamageAmount, struct FDamageEvent co
 
 	if (CurrentHealth <= 0) 
 	{
+		if (!DamageCauser) DamageAmount;
+		TArray<FName> Tags = DamageCauser->Tags;
+		if (Tags[0] == "Player")
+		{
+			ALGameState* GameState = Cast<ALGameState>(UGameplayStatics::GetGameState(GetWorld()));
+
+			if (GameState) 
+			{
+				//enemy was killed by player, so add score
+				UE_LOG(LogTemp, Warning, TEXT("Adding Score"));
+				GameState->AddScore();
+			}
+		}
+
+		//character killed
 		OnDeath.Broadcast();
 	}
 

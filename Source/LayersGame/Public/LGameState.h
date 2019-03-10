@@ -39,9 +39,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Game Settings")
 	float DifficultyScalar = 0.1f; //amount of seconds taken away from cooldown each enemy death
-
-	UFUNCTION()
-	void OnEnemyKilled();
 	
 public:
 	
@@ -49,4 +46,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetScore() const;
+
+	void AddScore();
 };

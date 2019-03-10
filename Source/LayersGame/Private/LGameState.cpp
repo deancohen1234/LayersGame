@@ -3,7 +3,6 @@
 #include "LGameState.h"
 #include "LEnemySpawnPoint.h"
 #include "Kismet/GameplayStatics.h"
-#include "LHealthComponent.h"
 
 
 void ALGameState::BeginPlay()
@@ -39,16 +38,6 @@ void ALGameState::SpawnEnemy()
 	FActorSpawnParameters Parameters;
 	Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	AActor* Enemy = GetWorld()->SpawnActor<AActor>(EnemyBlueprint, SpawnPoint, FRotator::ZeroRotator, Parameters);
-
-	ULHealthComponent* EnemyHealthComponent = Cast<ULHealthComponent>(Enemy->GetComponentByClass(ULHealthComponent::StaticClass()));
-
-	if (EnemyHealthComponent == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Health Comp is null"));
-		return;
-	}
-
-	EnemyHealthComponent->OnDeath.AddDynamic(this, &ALGameState::OnEnemyKilled);
 }
 
 float ALGameState::GetScore() const
@@ -63,7 +52,7 @@ FVector ALGameState::GetSpawnPoint()
 	return Point;
 }
 
-void ALGameState::OnEnemyKilled()
+void ALGameState::AddScore()
 {
 	Score += 100.0f;
 	UE_LOG(LogTemp, Warning, TEXT("Score: %f"), Score);
