@@ -8,7 +8,7 @@ void ALLayerClear::OnPlayerPickUp(AActor* Player)
 	TSubclassOf<UDamageType> DamageType;
 	TArray<AActor*> IgnoredActors = { Player };
 
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), 100.0f, Player->GetActorLocation(), 500.0f, DamageType, IgnoredActors, Player);
+	UGameplayStatics::ApplyRadialDamage(GetWorld(), 100.0f, Player->GetActorLocation(), DamageRadius, DamageType, IgnoredActors, Player);
 
 	Super::OnPlayerPickUp(Player); //destroys powerup
 }

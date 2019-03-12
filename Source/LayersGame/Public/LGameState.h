@@ -47,5 +47,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetScore() const;
 
+	UFUNCTION(BlueprintCallable)
+	float GetTopScore() const;
+
+	UFUNCTION(BlueprintCallable)
+	float GetSecondScore() const;
+
+	UFUNCTION(BlueprintCallable)
+	float GetThirdScore() const;
+
+	UFUNCTION(BlueprintCallable)
+	void EndGame ();
+
 	void AddScore();
 };

@@ -5,6 +5,7 @@
 #include "LayerPlatform.h"
 #include "LCharacter.h"
 #include "Sound/SoundCue.h"
+#include "LGameState.h"
 
 void ALPlayerController::BeginPlay()
 {
@@ -83,4 +84,10 @@ void ALPlayerController::KillPlayer()
 {
 	UnPossess();
 	GetPawn()->Destroy();
+}
+
+void ALPlayerController::EndGame()
+{
+	ALGameState* State = Cast<ALGameState>(UGameplayStatics::GetGameState(GetWorld()));
+	State->EndGame();
 }

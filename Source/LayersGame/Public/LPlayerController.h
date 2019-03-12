@@ -44,4 +44,8 @@ class LAYERSGAME_API ALPlayerController : public APlayerController
 		FVector GetLocalLayerPosition();
 
 		void KillPlayer();
+
+		//no other way to access game state from player controller
+		UFUNCTION(BlueprintCallable)
+		void EndGame();
 };
