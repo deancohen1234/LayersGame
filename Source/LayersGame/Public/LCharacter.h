@@ -64,5 +64,6 @@ private:
 	void GoUpLayer();
 	void GoDownLayer();
 
-	void UpdateMaterialEffects();
+	void UpdateEffects();
+	void UpdateMusicEffects();
 };

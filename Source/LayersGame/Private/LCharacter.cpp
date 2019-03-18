@@ -5,6 +5,7 @@
 #include "DrawDebugHelpers.h"
 #include "LPlayerController.h"
 #include "LHealthComponent.h"
+#include "Components/AudioComponent.h"
 
 
 // Sets default values
@@ -89,7 +90,7 @@ float ALCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Dam
 	UE_LOG(LogTemp, Warning, TEXT("Taking Damaged"));
 
 	HealthComp->HandleDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	UpdateMaterialEffects();
+	UpdateEffects();
 
 	return DamageAmount;
 }
@@ -99,7 +100,7 @@ void ALCharacter::Kill()
 	HealthComp->OnDeath.Broadcast(); //goes into health component and broadcasts death
 }
 
-void ALCharacter::UpdateMaterialEffects()
+void ALCharacter::UpdateEffects()
 {
 	if (MatInst == nullptr)
 	{
@@ -110,6 +111,33 @@ void ALCharacter::UpdateMaterialEffects()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Updating Mat"));
 		MatInst->SetScalarParameterValue("LastTimeDamageTaken", GetWorld()->TimeSeconds);
+	}
+
+	UpdateMusicEffects();
+}
+
+void ALCharacter::UpdateMusicEffects()
+{
+	if (Tags[0] == "Player")
+	{
+		TArray<AActor*> OutArray;
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), "Music", OutArray); //get the music actor
+
+		if (OutArray.Num() > 1 || OutArray.Num() == 0)
+		{
+			UE_LOG(LogTemp, Error, TEXT("There are two actors or no actors with the Music tag, there can only be one"));
+			return;
+		}
+
+		UAudioComponent* AudioComponent = Cast<UAudioComponent>(OutArray[0]->GetComponentByClass(UAudioComponent::StaticClass()));
+
+		if (!AudioComponent)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Audio Component Not Found on Music Actor"));
+			return;
+		}
+
+		//AudioComponent->SetFloatParameter(FName("Pitch"), 0.5f);
 	}
 }
 
