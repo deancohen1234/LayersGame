@@ -44,10 +44,11 @@ void ALGameState::SetupEnemySpawning()
 void ALGameState::EndGame()
 {
 	//you need to first get old data from drive because savegame object discards it after saving
-	TArray <FSaveGameData> SavedGameData;
+	TArray <FSaveGameData> GameData;
 
-	GetSaveGameData(SavedGameData);
-	SaveGameData(SavedGameData);
+	GetSaveGameData(GameData);
+
+	SaveGameData(GameData);
 }
 
 void ALGameState::AddScore()
@@ -67,6 +68,15 @@ FVector ALGameState::GetSpawnPoint() const
 	return Point;
 }
 
+void ALGameState::GetSaveGameData(TArray<FSaveGameData>& OutData)
+{
+	ULSaveGame* LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::CreateSaveGameObject(ULSaveGame::StaticClass()));
+	LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
+	OutData = TArray<FSaveGameData>(LoadGameInstance->GetSaveData());
+
+	UE_LOG(LogTemp, Warning, TEXT("Save Data Score : %f"), OutData[0].Score);
+}
+
 float ALGameState::GetScore() const
 {
 	return Score;
@@ -74,41 +84,37 @@ float ALGameState::GetScore() const
 
 float ALGameState::GetTopScore()
 {
-	TArray <FSaveGameData> SavedGameData;
+	TArray <FSaveGameData> GameData;
 
-	GetSaveGameData(SavedGameData);
+	GetSaveGameData(GameData);
 
-	UE_LOG(LogTemp, Warning, TEXT("Play has begun: %d"), SavedGameData.Num());
+	if (GameData.Num() == 0) return -1.0f;
+	UE_LOG(LogTemp, Warning, TEXT("Save Data Num : %d"), GameData.Num());
 
-	return SavedGameData[0].Score;
+
+	return GameData[0].Score;
 }
 
 float ALGameState::GetSecondScore()
 {
-	TArray <FSaveGameData> SavedGameData;
+	TArray <FSaveGameData> GameData;
 
-	GetSaveGameData(SavedGameData);
+	GetSaveGameData(GameData);
 
-	return SavedGameData[1].Score;
+	if (GameData.Num() == 0) return -1.0f;
+
+	return GameData[1].Score;
 }
 
 float ALGameState::GetThirdScore()
 {
-	TArray <FSaveGameData> SavedGameData;
+	TArray <FSaveGameData> GameData;
 
-	GetSaveGameData(SavedGameData);
+	GetSaveGameData(GameData);
 
-	return SavedGameData[2].Score;
-}
+	if (GameData.Num() == 0) return -1.0f;
 
-void ALGameState::GetSaveGameData(TArray<FSaveGameData> OutSaveGameData)
-{
-	TArray <FSaveGameData> SavedGameData;
-
-	ULSaveGame* LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::CreateSaveGameObject(ULSaveGame::StaticClass()));
-	LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
-	SavedGameData = TArray<FSaveGameData>(LoadGameInstance->GetSaveData());
-
+	return GameData[2].Score;
 }
 
 void ALGameState::SaveGameData(TArray<FSaveGameData> OutSaveGameData)

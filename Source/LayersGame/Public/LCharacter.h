@@ -8,6 +8,7 @@
 
 class ULHealthComponent;
 class UStaticMeshComponent;
+class UAudioComponent;
 
 UCLASS()
 class LAYERSGAME_API ALCharacter : public ACharacter
@@ -45,6 +46,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	UParticleSystem* ExplosionEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	UCurveFloat* Curve;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -58,13 +62,17 @@ public:
 
 private:
 
+	bool bTakenDamage; //player is in state of taking damage
+	float DamageStartTime; //time of damage hit
+	UAudioComponent* MusicComponent;
+
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	
 	void GoUpLayer();
 	void GoDownLayer();
 
-	void UpdateEffects();
 	void UpdateMaterialEffects();
-	void UpdateMusicEffects();
+	void HandlePlayerDamage();
+	void FindMusicComponent();
 };

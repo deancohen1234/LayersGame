@@ -6,7 +6,7 @@
 #include "GameFramework/SaveGame.h"
 #include "LSaveGame.generated.h"
 
-USTRUCT() 
+USTRUCT(Blueprintable, BlueprintType)
 struct FSaveGameData 
 {
 	GENERATED_USTRUCT_BODY();

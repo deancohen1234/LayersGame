@@ -27,6 +27,7 @@ void ALCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	FindMusicComponent(); //set the global var for audiocomponent
 }
 
 // Called every frame
@@ -34,6 +35,19 @@ void ALCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bTakenDamage) 
+	{
+		float mappedTime = GetWorld()->TimeSeconds - DamageStartTime;
+		if (mappedTime >= 1.0f) 
+		{
+			bTakenDamage = false;
+			return;
+		}
+
+		float CurveVal = Curve->FloatCurve.Eval(mappedTime);
+
+		MusicComponent->SetFloatParameter(FName("Pitch"), CurveVal);
+	}
 }
 
 // Called to bind functionality to input
@@ -91,7 +105,12 @@ float ALCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Dam
 
 	HealthComp->HandleDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	UpdateEffects(); //update visual and audio effects for damage hits
+	if (Tags[0] == "Player") 
+	{
+		HandlePlayerDamage();
+	}
+
+	UpdateMaterialEffects(); //update visual and audio effects for damage hits
 
 	return DamageAmount;
 }
@@ -99,12 +118,6 @@ float ALCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Dam
 void ALCharacter::Kill()
 {
 	HealthComp->OnDeath.Broadcast(); //goes into health component and broadcasts death
-}
-
-void ALCharacter::UpdateEffects()
-{
-	UpdateMaterialEffects();
-	UpdateMusicEffects();
 }
 
 void ALCharacter::UpdateMaterialEffects()
@@ -121,7 +134,14 @@ void ALCharacter::UpdateMaterialEffects()
 	}
 }
 
-void ALCharacter::UpdateMusicEffects()
+//TODO change name of this functions
+void ALCharacter::HandlePlayerDamage()
+{
+	DamageStartTime = GetWorld()->TimeSeconds;
+	bTakenDamage = true;
+}
+
+void ALCharacter::FindMusicComponent()
 {
 	//only update music if character is player
 	if (Tags[0] == "Player")
@@ -135,15 +155,8 @@ void ALCharacter::UpdateMusicEffects()
 			return;
 		}
 
-		UAudioComponent* AudioComponent = Cast<UAudioComponent>(OutArray[0]->GetComponentByClass(UAudioComponent::StaticClass()));
-
-		if (!AudioComponent)
-		{
-			UE_LOG(LogTemp, Error, TEXT("Audio Component Not Found on Music Actor"));
-			return;
-		}
-
-		//AudioComponent->SetFloatParameter(FName("Pitch"), 0.5f);
+		MusicComponent = Cast<UAudioComponent>(OutArray[0]->GetComponentByClass(UAudioComponent::StaticClass()));
+		
 	}
 }
 

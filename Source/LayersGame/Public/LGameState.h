@@ -7,7 +7,6 @@
 #include "LGameState.generated.h"
 
 class ALEnemySpawnPoint;
-
 struct FSaveGameData;
 /**
  * 
@@ -29,8 +28,9 @@ private:
 	void SetupEnemySpawning();
 	FVector GetSpawnPoint() const;
 
-	void GetSaveGameData(TArray<FSaveGameData> OutSaveGameData);
-	void SaveGameData(TArray<FSaveGameData> OutSaveGameData);
+	void GetSaveGameData(TArray<FSaveGameData>& OutData);
+
+	void SaveGameData(TArray<FSaveGameData> SaveGameData);
 
 protected:
 
