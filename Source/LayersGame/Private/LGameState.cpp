@@ -12,20 +12,7 @@ void ALGameState::BeginPlay()
 
 	Difficulty = StartingDifficulty;
 
-	TArray<AActor*> OutActors;
-
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALEnemySpawnPoint::StaticClass(), OutActors);
-
-	//cast all actors to desired class then add them to spawnpoints array
-	for (int i = 0; i < OutActors.Num(); i++) 
-	{
-		ALEnemySpawnPoint* SpawnPoint = Cast<ALEnemySpawnPoint>(OutActors[i]);
-		SpawnPoints.Add(SpawnPoint);
-	}
-
-	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &ALGameState::SpawnEnemy, Difficulty, true, 2.0f); //difficulty is timer interval
-
-	GetTopScore();
+	SetupEnemySpawning();
 }
 
 void ALGameState::SpawnEnemy()
@@ -39,51 +26,19 @@ void ALGameState::SpawnEnemy()
 	AActor* Enemy = GetWorld()->SpawnActor<AActor>(EnemyBlueprint, SpawnPoint, FRotator::ZeroRotator, Parameters);
 }
 
-float ALGameState::GetScore() const
+void ALGameState::SetupEnemySpawning()
 {
-	return Score;
-}
+	TArray<AActor*> OutActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALEnemySpawnPoint::StaticClass(), OutActors);
 
-float ALGameState::GetTopScore() const
-{
-	TArray <FSaveGameData> SavedGameData;
+	//cast all actors to desired class then add them to spawnpoints array
+	for (int i = 0; i < OutActors.Num(); i++)
+	{
+		ALEnemySpawnPoint* SpawnPoint = Cast<ALEnemySpawnPoint>(OutActors[i]);
+		SpawnPoints.Add(SpawnPoint);
+	}
 
-	ULSaveGame* LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::CreateSaveGameObject(ULSaveGame::StaticClass()));
-	LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
-	SavedGameData = TArray<FSaveGameData>(LoadGameInstance->GetSaveData());
-
-	UE_LOG(LogTemp, Warning, TEXT("Play has begun: %d"), SavedGameData.Num());
-
-	return SavedGameData[0].Score;
-}
-
-float ALGameState::GetSecondScore() const
-{
-	TArray <FSaveGameData> SavedGameData;
-
-	ULSaveGame* LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::CreateSaveGameObject(ULSaveGame::StaticClass()));
-	LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
-	SavedGameData = TArray<FSaveGameData>(LoadGameInstance->GetSaveData());
-
-	return SavedGameData[1].Score;
-}
-
-float ALGameState::GetThirdScore() const
-{
-	TArray <FSaveGameData> SavedGameData;
-
-	ULSaveGame* LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::CreateSaveGameObject(ULSaveGame::StaticClass()));
-	LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
-	SavedGameData = TArray<FSaveGameData>(LoadGameInstance->GetSaveData());
-
-	return SavedGameData[2].Score;
-}
-
-FVector ALGameState::GetSpawnPoint()
-{
-	int randIndex = FMath::RandHelper(SpawnPoints.Num());
-	FVector Point = SpawnPoints[randIndex]->GetActorLocation();
-	return Point;
+	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &ALGameState::SpawnEnemy, Difficulty, true, 2.0f); //difficulty is timer interval
 }
 
 void ALGameState::EndGame()
@@ -91,13 +46,8 @@ void ALGameState::EndGame()
 	//you need to first get old data from drive because savegame object discards it after saving
 	TArray <FSaveGameData> SavedGameData;
 
-	ULSaveGame* LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::CreateSaveGameObject(ULSaveGame::StaticClass()));
-	LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
-	SavedGameData = TArray<FSaveGameData>(LoadGameInstance->GetSaveData());
-
-	ULSaveGame* SaveGameInstance = Cast<ULSaveGame>(UGameplayStatics::CreateSaveGameObject(ULSaveGame::StaticClass()));
-	SaveGameInstance->SetSaveData("Dean Large Pants", Score, SavedGameData);
-	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SaveSlotName, SaveGameInstance->UserIndex);
+	GetSaveGameData(SavedGameData);
+	SaveGameData(SavedGameData);
 }
 
 void ALGameState::AddScore()
@@ -108,4 +58,63 @@ void ALGameState::AddScore()
 
 	//GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
 	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &ALGameState::SpawnEnemy, Difficulty, true, 0.0f); //difficulty is timer interval
+}
+
+FVector ALGameState::GetSpawnPoint() const
+{
+	int randIndex = FMath::RandHelper(SpawnPoints.Num());
+	FVector Point = SpawnPoints[randIndex]->GetActorLocation();
+	return Point;
+}
+
+float ALGameState::GetScore() const
+{
+	return Score;
+}
+
+float ALGameState::GetTopScore()
+{
+	TArray <FSaveGameData> SavedGameData;
+
+	GetSaveGameData(SavedGameData);
+
+	UE_LOG(LogTemp, Warning, TEXT("Play has begun: %d"), SavedGameData.Num());
+
+	return SavedGameData[0].Score;
+}
+
+float ALGameState::GetSecondScore()
+{
+	TArray <FSaveGameData> SavedGameData;
+
+	GetSaveGameData(SavedGameData);
+
+	return SavedGameData[1].Score;
+}
+
+float ALGameState::GetThirdScore()
+{
+	TArray <FSaveGameData> SavedGameData;
+
+	GetSaveGameData(SavedGameData);
+
+	return SavedGameData[2].Score;
+}
+
+void ALGameState::GetSaveGameData(TArray<FSaveGameData> OutSaveGameData)
+{
+	TArray <FSaveGameData> SavedGameData;
+
+	ULSaveGame* LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::CreateSaveGameObject(ULSaveGame::StaticClass()));
+	LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
+	SavedGameData = TArray<FSaveGameData>(LoadGameInstance->GetSaveData());
+
+}
+
+void ALGameState::SaveGameData(TArray<FSaveGameData> OutSaveGameData)
+{
+	ULSaveGame* SaveGameInstance = Cast<ULSaveGame>(UGameplayStatics::CreateSaveGameObject(ULSaveGame::StaticClass()));
+	SaveGameInstance->SetSaveData("Dean Large Pants", Score, OutSaveGameData);
+	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SaveSlotName, SaveGameInstance->UserIndex);
+
 }

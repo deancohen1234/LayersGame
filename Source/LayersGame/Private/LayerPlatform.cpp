@@ -59,7 +59,7 @@ void ALayerPlatform::SetupReferencePlatforms()
 
 		if (layer == nullptr) return;
 
-		if (layer->GetLayerType() == AboveEnum) 
+		if (layer->GetLayerType() == AboveEnum) //use enum to set actor that is layer platform actor above this platform
 		{
 			AbovePlatform = layer;
 		}
@@ -85,8 +85,7 @@ ELayerType ALayerPlatform::GetBelowLayerEnum(ELayerType Layer)
 
 void ALayerPlatform::UpdateLayerIndicator()
 {
-	//if indicator is not spawned and layer is active
-		//spawn indicator
+	//if indicator is existent on layer when player is moving onto layer, destroy indicator
 	if (InstantiatedIndicatorActor != nullptr) //destroy all existent indicators
 	{
 		InstantiatedIndicatorActor->Destroy();

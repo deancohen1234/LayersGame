@@ -7,6 +7,8 @@
 #include "LGameState.generated.h"
 
 class ALEnemySpawnPoint;
+
+struct FSaveGameData;
 /**
  * 
  */
@@ -18,16 +20,17 @@ class LAYERSGAME_API ALGameState : public AGameStateBase
 private:
 
 	float Score;
-
 	float Difficulty;
 
 	TArray<ALEnemySpawnPoint*> SpawnPoints;
-
 	FTimerHandle SpawnTimerHandle;
 
 	void SpawnEnemy();
+	void SetupEnemySpawning();
+	FVector GetSpawnPoint() const;
 
-	FVector GetSpawnPoint();
+	void GetSaveGameData(TArray<FSaveGameData> OutSaveGameData);
+	void SaveGameData(TArray<FSaveGameData> OutSaveGameData);
 
 protected:
 
@@ -48,13 +51,13 @@ public:
 	float GetScore() const;
 
 	UFUNCTION(BlueprintCallable)
-	float GetTopScore() const;
+	float GetTopScore();
 
 	UFUNCTION(BlueprintCallable)
-	float GetSecondScore() const;
+	float GetSecondScore();
 
 	UFUNCTION(BlueprintCallable)
-	float GetThirdScore() const;
+	float GetThirdScore();
 
 	UFUNCTION(BlueprintCallable)
 	void EndGame ();

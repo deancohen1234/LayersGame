@@ -73,13 +73,13 @@ void ALCharacter::GoDownLayer()
 	playerController->MoveLayer(false);
 }
 
+//create damage radius around character
 void ALCharacter::MakeDamageExplosion()
 {
 	TSubclassOf<UDamageType> type;
 	TArray<AActor*> IgnoredActors;
-	IgnoredActors.Add(this);
+	IgnoredActors.Add(this); //ignore yourself in the damage sphere
 
-	//DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 16, FColor::Cyan, false, 1.0f, 0, 1.0f);
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), 100.0f, GetActorLocation(), DamageRadius, type, IgnoredActors, this);
 
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation());
@@ -90,7 +90,8 @@ float ALCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Dam
 	UE_LOG(LogTemp, Warning, TEXT("Taking Damaged"));
 
 	HealthComp->HandleDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	UpdateEffects();
+
+	UpdateEffects(); //update visual and audio effects for damage hits
 
 	return DamageAmount;
 }
@@ -102,6 +103,12 @@ void ALCharacter::Kill()
 
 void ALCharacter::UpdateEffects()
 {
+	UpdateMaterialEffects();
+	UpdateMusicEffects();
+}
+
+void ALCharacter::UpdateMaterialEffects()
+{
 	if (MatInst == nullptr)
 	{
 		MatInst = MeshComponent->CreateAndSetMaterialInstanceDynamicFromMaterial(0, MeshComponent->GetMaterial(0));
@@ -112,12 +119,11 @@ void ALCharacter::UpdateEffects()
 		UE_LOG(LogTemp, Warning, TEXT("Updating Mat"));
 		MatInst->SetScalarParameterValue("LastTimeDamageTaken", GetWorld()->TimeSeconds);
 	}
-
-	UpdateMusicEffects();
 }
 
 void ALCharacter::UpdateMusicEffects()
 {
+	//only update music if character is player
 	if (Tags[0] == "Player")
 	{
 		TArray<AActor*> OutArray;
