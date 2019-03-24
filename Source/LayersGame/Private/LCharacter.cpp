@@ -61,6 +61,8 @@ void ALCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("GoUp", IE_Pressed, this, &ALCharacter::GoUpLayer);
 	PlayerInputComponent->BindAction("GoDown", IE_Pressed, this, &ALCharacter::GoDownLayer);
 
+	PlayerInputComponent->BindAction("CheatKillCharacter", IE_Pressed, this, &ALCharacter::KillCharacter);
+
 }
 
 void ALCharacter::MoveForward(float Value) 
@@ -85,6 +87,11 @@ void ALCharacter::GoDownLayer()
 	ALPlayerController* playerController = Cast<ALPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 	playerController->MoveLayer(false);
+}
+
+void ALCharacter::KillCharacter()
+{
+	UGameplayStatics::ApplyDamage(this, 10000000.0f, GetController()->GetInstigatorController(), this, UDamageType::StaticClass());
 }
 
 //create damage radius around character

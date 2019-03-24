@@ -46,9 +46,11 @@ void ALGameState::EndGame()
 	//you need to first get old data from drive because savegame object discards it after saving
 	TArray <FSaveGameData> GameData;
 
-	GetSaveGameData(GameData);
+	if (GetSaveGameData(GameData)) 
+	{
+		SaveGameData(GameData);
+	}
 
-	SaveGameData(GameData);
 }
 
 void ALGameState::AddScore()
@@ -68,14 +70,7 @@ FVector ALGameState::GetSpawnPoint() const
 	return Point;
 }
 
-void ALGameState::GetSaveGameData(TArray<FSaveGameData>& OutData)
-{
-	ULSaveGame* LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::CreateSaveGameObject(ULSaveGame::StaticClass()));
-	LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
-	OutData = TArray<FSaveGameData>(LoadGameInstance->GetSaveData());
 
-	UE_LOG(LogTemp, Warning, TEXT("Save Data Score : %f"), OutData[0].Score);
-}
 
 float ALGameState::GetScore() const
 {
@@ -115,6 +110,31 @@ float ALGameState::GetThirdScore()
 	if (GameData.Num() == 0) return -1.0f;
 
 	return GameData[2].Score;
+}
+
+
+bool ALGameState::GetSaveGameData(TArray<FSaveGameData>& OutData)
+{
+	ULSaveGame* LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::CreateSaveGameObject(ULSaveGame::StaticClass()));
+	LoadGameInstance = Cast<ULSaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
+
+	if (!LoadGameInstance) 
+	{
+		//if there is no data, create new data
+		FSaveGameData Data; //Template data
+		Data.PlayerName = "Dean";
+		Data.Score = 100.0f;
+
+		TArray<FSaveGameData> SaveData;
+		SaveData.Add(Data);
+		SaveGameData(SaveData);
+		return false;
+	}
+
+	OutData = TArray<FSaveGameData>(LoadGameInstance->GetSaveData());
+
+	UE_LOG(LogTemp, Warning, TEXT("Save Data Score : %f"), OutData[0].Score);
+	return true;
 }
 
 void ALGameState::SaveGameData(TArray<FSaveGameData> OutSaveGameData)

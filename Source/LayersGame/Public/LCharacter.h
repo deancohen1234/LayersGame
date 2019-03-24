@@ -71,6 +71,7 @@ private:
 	
 	void GoUpLayer();
 	void GoDownLayer();
+	void KillCharacter();
 
 	void UpdateMaterialEffects();
 	void HandlePlayerDamage();

@@ -28,7 +28,7 @@ private:
 	void SetupEnemySpawning();
 	FVector GetSpawnPoint() const;
 
-	void GetSaveGameData(TArray<FSaveGameData>& OutData);
+	bool GetSaveGameData(TArray<FSaveGameData>& OutData);
 
 	void SaveGameData(TArray<FSaveGameData> SaveGameData);
 
