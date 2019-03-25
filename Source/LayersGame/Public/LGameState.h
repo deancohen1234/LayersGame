@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
+#include "LSaveGame.h"
 #include "LGameState.generated.h"
 
 class ALEnemySpawnPoint;
-struct FSaveGameData;
+//struct FSaveGameData;
 /**
  * 
  */
@@ -32,6 +33,8 @@ private:
 
 	void SaveGameData(TArray<FSaveGameData> SaveGameData);
 
+	FString PlayerName = "No Name";
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Game Settings")
@@ -48,19 +51,16 @@ public:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable)
+	FSaveGameData GetScoreSaveData(int32 ScoreIndex);
+
+	UFUNCTION(BlueprintCallable)
 	float GetScore() const;
 
 	UFUNCTION(BlueprintCallable)
-	float GetTopScore();
+	void SetPlayerName(FString Name);
 
 	UFUNCTION(BlueprintCallable)
-	float GetSecondScore();
-
-	UFUNCTION(BlueprintCallable)
-	float GetThirdScore();
-
-	UFUNCTION(BlueprintCallable)
-	void EndGame ();
+	void EndGame();
 
 	void AddScore();
 };

@@ -44,13 +44,14 @@ void ALGameState::SetupEnemySpawning()
 void ALGameState::EndGame()
 {
 	//you need to first get old data from drive because savegame object discards it after saving
+	/*
 	TArray <FSaveGameData> GameData;
 
 	if (GetSaveGameData(GameData)) 
 	{
 		SaveGameData(GameData);
 	}
-
+	*/
 }
 
 void ALGameState::AddScore()
@@ -77,39 +78,29 @@ float ALGameState::GetScore() const
 	return Score;
 }
 
-float ALGameState::GetTopScore()
+void ALGameState::SetPlayerName(FString Name)
+{
+	PlayerName = Name;
+	
+	TArray <FSaveGameData> GameData;
+
+	if (GetSaveGameData(GameData))
+	{
+		SaveGameData(GameData);
+	}
+}
+
+FSaveGameData ALGameState::GetScoreSaveData(int32 ScoreIndex) 
 {
 	TArray <FSaveGameData> GameData;
 
 	GetSaveGameData(GameData);
 
-	if (GameData.Num() == 0) return -1.0f;
+	if (GameData.Num() == 0) return FSaveGameData();
 	UE_LOG(LogTemp, Warning, TEXT("Save Data Num : %d"), GameData.Num());
 
 
-	return GameData[0].Score;
-}
-
-float ALGameState::GetSecondScore()
-{
-	TArray <FSaveGameData> GameData;
-
-	GetSaveGameData(GameData);
-
-	if (GameData.Num() == 0) return -1.0f;
-
-	return GameData[1].Score;
-}
-
-float ALGameState::GetThirdScore()
-{
-	TArray <FSaveGameData> GameData;
-
-	GetSaveGameData(GameData);
-
-	if (GameData.Num() == 0) return -1.0f;
-
-	return GameData[2].Score;
+	return GameData[ScoreIndex];
 }
 
 
@@ -133,14 +124,15 @@ bool ALGameState::GetSaveGameData(TArray<FSaveGameData>& OutData)
 
 	OutData = TArray<FSaveGameData>(LoadGameInstance->GetSaveData());
 
-	UE_LOG(LogTemp, Warning, TEXT("Save Data Score : %f"), OutData[0].Score);
 	return true;
 }
 
 void ALGameState::SaveGameData(TArray<FSaveGameData> OutSaveGameData)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Saving Game"));
+
 	ULSaveGame* SaveGameInstance = Cast<ULSaveGame>(UGameplayStatics::CreateSaveGameObject(ULSaveGame::StaticClass()));
-	SaveGameInstance->SetSaveData("Dean Large Pants", Score, OutSaveGameData);
+	SaveGameInstance->SetSaveData(PlayerName, Score, OutSaveGameData);
 	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SaveSlotName, SaveGameInstance->UserIndex);
 
 }

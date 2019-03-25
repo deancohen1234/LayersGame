@@ -27,30 +27,12 @@ void ULSaveGame::SetSaveData(FString PlayerName, float Score, TArray<FSaveGameDa
 		OldData[2] = SDG;
 
 	}
-	//Add new entry, sort, then remove fourth entry
-	/*if (SDG.Score > OldData[2].Score)
-	{
-		if (SDG.Score > OldData[1].Score)
-		{
-			if (SDG.Score > OldData[0].Score)
-			{
-				//player has new highest score
-				float oldFirst = OldData[0].Score;
-				float oldSecond = OldData[0].Score;
-				OldData[0] = SDG;
-			}
-			else 
-			{
-				OldData[1] = SDG;
-			}
-		}
-		else 
-		{
-			OldData[2] = SDG;
-		}
-	}*/
 
-	OldData.Add(SDG);
+	//if player already has score under their name, don't add another score
+	if (!DoesDataExist(SDG)) 
+	{
+		OldData.Add(SDG);
+	}
 
 	OldData.Sort([](const FSaveGameData& Lhs, const FSaveGameData& Rhs) -> bool {
 		// sort by score, higher score moves up
@@ -68,6 +50,22 @@ void ULSaveGame::SetSaveData(FString PlayerName, float Score, TArray<FSaveGameDa
 TArray<FSaveGameData> ULSaveGame::GetSaveData() const
 {
 	return TopPlayerData;
+}
+
+bool ULSaveGame::DoesDataExist(FSaveGameData Data) 
+{
+	for (int i = 0; i < TopPlayerData.Num(); i++) 
+	{
+		FSaveGameData ArrayElement = TopPlayerData[i];
+		
+		if (ArrayElement.PlayerName == Data.PlayerName && ArrayElement.Score == Data.Score) 
+		{
+			//player already has score that is under their name, data does exist
+			return true;
+		}
+	}
+
+	return false;
 }
 
 
